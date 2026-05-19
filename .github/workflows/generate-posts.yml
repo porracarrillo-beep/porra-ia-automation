@@ -1,0 +1,38 @@
+name: Generate & Publish @porra_ia Posts
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  generate-and-publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests schedule
+    
+    - name: Generate posts
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+        INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
+      run: python generate_posts.py
+    
+    - name: Upload generated posts
+      uses: actions/upload-artifact@v3
+      with:
+        name: generated-posts
+        path: generated_posts/
+        retention-days: 30
