@@ -31,7 +31,7 @@ jobs:
       run: python generate_posts.py
     
     - name: Upload generated posts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: generated-posts
         path: generated_posts/
